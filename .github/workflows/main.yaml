@@ -1,0 +1,28 @@
+name: Flutter Workflow
+on: push
+jobs:
+  build:
+    name: build release
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v1
+        with: 
+         java-version: "12.x"
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+         flutter-version: "3.12.x"
+         channel: "master"
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build APK
+        run: flutter build apk --release
+      - name: Upload APK
+        uses: ncipollo/release-action@v1
+        with:
+          name: Pixlify.apk
+          artifacts: build/app/outputs/flutter-apk/app-release.apk
+          tag: v1.0.${{ github.run_number }}
